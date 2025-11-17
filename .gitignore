@@ -1,0 +1,63 @@
+# ---- Python 기본 ----
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 가상환경
+venv/
+.env/
+.env.* 
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# 패키지/빌드 아티팩트
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# 로그 / 임시 파일
+*.log
+*.tmp
+*.swp
+*.swo
+
+# 테스트/커버리지
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# IDE / 에디터 설정
+.vscode/
+.idea/
+*.code-workspace
+
+# OS 별 잡파일
+.DS_Store
+Thumbs.db
+
+# 데이터 / 업로드 파일 (필요하면 조정)
+uploads/
+tmp/
+*.sqlite3
+
+# FastAPI / 앱 관련 생성물
+app/static/generated/
+app/static/uploads/
+
+# Azure / ML 관련 (필요시)
+.azureml/
+aml_config/
+logs/
+outputs/
+
+# 환경변수 파일
+.env
+.env.*
