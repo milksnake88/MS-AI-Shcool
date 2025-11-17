@@ -8,5 +8,5 @@ load_dotenv()
 AZURE_CV_ENDPOINT = os.getenv("AZURE_CV_ENDPOINT")
 AZURE_CV_KEY = os.getenv("AZURE_CV_KEY")
 
-# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 # SD_API_KEY = os.getenv("SD_API_KEY")
