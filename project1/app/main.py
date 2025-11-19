@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from app.ocr.azure_ocr import extract_text_from_image
 from app.llm.gemini_client import build_sd_prompt_from_text
 from app.diffusion.sd_client import generate_image_from_prompt
+from app.vision.azure_cv_client import detect_objects_from_image_path
 
 import traceback
 
@@ -29,6 +30,7 @@ async def index(request: Request):
             "ocr_text": None,
             "sd_prompt": None,
             "generated_image_url": None,
+            "detections": None,
             "error": None,
             "filename": None,
         },
@@ -51,6 +53,7 @@ async def ocr_image(request: Request, file: UploadFile = File(...)):
                 "ocr_text": ocr_text,
                 "sd_prompt": None,
                 "generated_image_url": None,
+                "detections": None,
                 "error": None,
                 "filename": file.filename,
             },
@@ -63,6 +66,7 @@ async def ocr_image(request: Request, file: UploadFile = File(...)):
                 "ocr_text": None,
                 "sd_prompt": None,
                 "generated_image_url": None,
+                "detections": None,
                 "error": str(e),
                 "filename": getattr(file, "filename", None),
             },
@@ -76,7 +80,7 @@ async def generate_from_image(request: Request, file: UploadFile = File(...)):
       1) Azure OCR로 텍스트 추출
       2) Gemini로 Stable Diffusion용 프롬프트 생성
       3) Stable Diffusion(기본 모델)로 이미지 생성
-    까지 한 번에 수행하고 결과를 보여준다.
+      4) Azure CV Object Detection으로 생성 이미지 내 객체 검출
     """
     try:
         image_bytes = await file.read()
@@ -88,7 +92,10 @@ async def generate_from_image(request: Request, file: UploadFile = File(...)):
         sd_prompt = build_sd_prompt_from_text(ocr_text)
 
         # 3) Stable Diffusion 이미지 생성
-        generated_image_url = generate_image_from_prompt(sd_prompt)
+        generated_image_url, generated_image_path = generate_image_from_prompt(sd_prompt)
+
+        # 4) Azure CV Object Detection
+        detections = detect_objects_from_image_path(generated_image_path)
 
         return templates.TemplateResponse(
             "index.html",
@@ -97,6 +104,7 @@ async def generate_from_image(request: Request, file: UploadFile = File(...)):
                 "ocr_text": ocr_text,
                 "sd_prompt": sd_prompt,
                 "generated_image_url": generated_image_url,
+                "detections": detections,
                 "error": None,
                 "filename": file.filename,
             },
@@ -111,6 +119,7 @@ async def generate_from_image(request: Request, file: UploadFile = File(...)):
                 "ocr_text": None,
                 "sd_prompt": None,
                 "generated_image_url": None,
+                "detections": None,
                 "error": str(e),
                 "filename": getattr(file, "filename", None),
             },
