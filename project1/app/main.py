@@ -124,4 +124,3 @@ async def generate_from_image(request: Request, file: UploadFile = File(...)):
                 "filename": getattr(file, "filename", None),
             },
         )
-

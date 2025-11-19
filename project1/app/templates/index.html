@@ -49,6 +49,17 @@
     <img src="{{ generated_image_url }}" alt="Generated image"
          style="max-width: 100%; height: auto; border: 1px solid #ccc;" />
   {% endif %}
+
+  {% if detections %}
+  <h3>Detected Objects</h3>
+  <ul>
+  {% for obj in detections %}
+    <li>
+      {{ obj.label }} ({{ (obj.probability * 100) | round(1) }}%)
+    </li>
+  {% endfor %}
+  </ul>
+{% endif %}
 </body>
 </html>
 
