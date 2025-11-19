@@ -1,45 +1,86 @@
 # app/vision/azure_cv_client.py
+
 import os
-from msrest.authentication import ApiKeyCredentials
-from azure.cognitiveservices.vision.customvision.prediction import (
-    CustomVisionPredictionClient,
-)
+import requests
 
-# .env 에 넣어두거나 app.config 에서 가져와도 됨
-ENDPOINT = os.getenv("AZURE_CV_ENDPOINT")
+PREDICTION_URL = os.getenv("AZURE_CV_PREDICTION_URL")
 PREDICTION_KEY = os.getenv("AZURE_CV_PREDICTION_KEY")
-PROJECT_ID = os.getenv("AZURE_CV_PROJECT_ID")           # GUID
-PUBLISHED_NAME = os.getenv("AZURE_CV_PUBLISHED_NAME")   # 배포된 모델 이름
-
-prediction_credentials = ApiKeyCredentials(
-    in_headers={"Prediction-Key": PREDICTION_KEY}
-)
-predictor = CustomVisionPredictionClient(ENDPOINT, prediction_credentials)
 
 
 def detect_objects_from_image_path(image_path: str) -> list[dict]:
     """
-    로컬 이미지 파일을 Azure Custom Vision Object Detection에 보내고
-    [ {label, probability, bbox}, ... ] 형태로 결과를 반환.
+    Custom Vision의 Prediction URL을 이용해
+    로컬 이미지 파일에 대해 Object Detection을 수행한다.
+
+    Returns:
+        [
+          {
+            "label": str,
+            "probability": float,
+            "bbox": {
+              "left": float, "top": float,
+              "width": float, "height": float,
+            },
+          },
+          ...
+        ]
     """
-    with open(image_path, "rb") as image_data:
-        results = predictor.detect_image(
-            PROJECT_ID,
-            PUBLISHED_NAME,
-            image_data
+    if not PREDICTION_URL or not PREDICTION_KEY:
+        raise RuntimeError(
+            "AZURE_CV_PREDICTION_URL or AZURE_CV_PREDICTION_KEY is not set"
         )
 
+    # 1) 이미지 파일을 바이너리로 읽기
+    with open(image_path, "rb") as f:
+        image_data = f.read()
+
+    # 2) 문서에서 알려준 대로 헤더 구성
+    headers = {
+        "Prediction-Key": PREDICTION_KEY,
+        "Content-Type": "application/octet-stream",
+    }
+
+    # 3) REST API 호출 (Body = 이미지 바이너리)
+    response = requests.post(
+        PREDICTION_URL,
+        headers=headers,
+        data=image_data,
+        timeout=30,
+    )
+    response.raise_for_status()
+    result = response.json()
+
+    # 4) 결과 파싱
+    # 예상 응답 구조:
+    # {
+    #   "id": "...",
+    #   "project": "...",
+    #   "predictions": [
+    #     {
+    #       "probability": 0.95,
+    #       "tagId": "...",
+    #       "tagName": "bed",
+    #       "boundingBox": {
+    #         "left": 0.1, "top": 0.2,
+    #         "width": 0.3, "height": 0.4
+    #       }
+    #     },
+    #     ...
+    #   ]
+    # }
     detections: list[dict] = []
-    for pred in results.predictions:
+
+    for pred in result.get("predictions", []):
+        box = pred.get("boundingBox", {}) or {}
         detections.append(
             {
-                "label": pred.tag_name,
-                "probability": float(pred.probability),
+                "label": pred.get("tagName"),
+                "probability": float(pred.get("probability", 0.0)),
                 "bbox": {
-                    "left": pred.bounding_box.left,
-                    "top": pred.bounding_box.top,
-                    "width": pred.bounding_box.width,
-                    "height": pred.bounding_box.height,
+                    "left": float(box.get("left", 0.0)),
+                    "top": float(box.get("top", 0.0)),
+                    "width": float(box.get("width", 0.0)),
+                    "height": float(box.get("height", 0.0)),
                 },
             }
         )

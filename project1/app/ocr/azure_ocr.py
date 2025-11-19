@@ -19,7 +19,7 @@ def get_cv_client() -> ComputerVisionClient:
 
 def extract_text_from_image(image_bytes: bytes) -> str:
     """
-    Azure OCR(Read API)를 사용해서 이미지 바이트에서 텍스트를 추출한다.
+    Azure OCR(Read API)를 사용해서 이미지 바이트에서 텍스트를 추출.
     여러 줄을 '\n'으로 이어 붙여서 하나의 문자열로 반환.
     """
     client = get_cv_client()
