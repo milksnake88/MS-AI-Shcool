@@ -19,3 +19,5 @@ requests
 
 
 torch
+
+azure-cognitiveservices-vision-customvision
