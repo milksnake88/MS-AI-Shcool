@@ -1,22 +1,12 @@
 # app/llm/gemini_client.py
+import os
 import google.generativeai as genai
 
 from app.config import GEMINI_API_KEY
 
 
-def _configure_client():
-    if not GEMINI_API_KEY:
-        raise RuntimeError("GEMINI_API_KEY is not set. Check your .env or environment variables.")
-    genai.configure(api_key=GEMINI_API_KEY)
-
-
-def build_sd_prompt_from_text(raw_text: str) -> str:
-    """
-    OCR로 추출된 텍스트(raw_text)를 바탕으로
-    Stable Diffusion용 프롬프트를 만들어주는 함수.
-    """
-    _configure_client()
-
+def build_sd_prompt_from_text(ocr_text):
+    
     system_prompt = """
 Role: You are an expert prompt engineer for Stable Diffusion who turns children’s story text into consistent, detailed illustration prompts.
 Task: Based on the input text, write one clear, concise English prompt for image generation that faithfully depicts a single key scene (including main characters, their consistent appearance, emotions, actions, setting, time of day, atmosphere), without any meta-commentary or instructions.
@@ -33,7 +23,7 @@ Output Format: [Quantity if any] [Adjective] [ONE Main Subject] [Action] [Simple
 
 """
 
-    user_prompt = f"Input text: {raw_text}"
+    user_prompt = f"Input text: {ocr_text}"
 
     model = genai.GenerativeModel("gemini-2.5-flash")
     response = model.generate_content(

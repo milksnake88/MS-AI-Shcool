@@ -15,9 +15,9 @@ def detect_objects_from_image_path(image_path: str) -> list[dict]:
     Returns:
         [
           {
-            "label": str,
-            "probability": float,
-            "bbox": {
+            "name": str,
+            "confidence": float,
+            "boundingBox": {
               "left": float, "top": float,
               "width": float, "height": float,
             },
@@ -74,9 +74,9 @@ def detect_objects_from_image_path(image_path: str) -> list[dict]:
         box = pred.get("boundingBox", {}) or {}
         detections.append(
             {
-                "label": pred.get("tagName"),
-                "probability": float(pred.get("probability", 0.0)),
-                "bbox": {
+                "name": pred.get("tagName"),
+                "confidence": float(pred.get("probability", 0.0)),
+                "boundingBox": {
                     "left": float(box.get("left", 0.0)),
                     "top": float(box.get("top", 0.0)),
                     "width": float(box.get("width", 0.0)),
@@ -87,3 +87,23 @@ def detect_objects_from_image_path(image_path: str) -> list[dict]:
 
     return detections
 
+def _resolve_local_path_from_url(image_url: str) -> str:
+    # "/static/generated/abcd.png" -> "app/static/generated/abcd.png"
+    rel_path = image_url.lstrip("/")  # "static/generated/abcd.png"
+
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # project1
+    local_path = os.path.join(base_dir, "app", rel_path)  # project1/app/static/...
+    return local_path
+
+
+def detect_objects_from_image_url(image_url: str) -> list[dict]:
+    """
+    프론트와 주고받는 imageUrl("/static/generated/xxx.png")을 받아
+    실제 로컬 경로를 찾고, 그 이미지를 Custom Vision에 넣어
+    프론트 스펙에 맞는 objects 배열을 반환한다.
+    """
+    image_path = _resolve_local_path_from_url(image_url)
+    if not os.path.exists(image_path):
+        raise FileNotFoundError(f"Image not found for detection: {image_path}")
+
+    return detect_objects_from_image_path(image_path)

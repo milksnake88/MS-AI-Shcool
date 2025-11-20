@@ -1,4 +1,5 @@
 # app/ocr/azure_ocr.py
+
 from io import BytesIO
 import time
 
@@ -10,8 +11,14 @@ from app.config import AZURE_CV_ENDPOINT, AZURE_CV_KEY
 
 
 def get_cv_client() -> ComputerVisionClient:
+    """
+    Azure Cognitive Services Computer Vision (레거시 Read API) 클라이언트 생성
+    """
     if not AZURE_CV_ENDPOINT or not AZURE_CV_KEY:
-        raise RuntimeError("Azure Computer Vision endpoint/key not set. Check .env or env vars.")
+        raise RuntimeError(
+            "Azure Computer Vision endpoint/key not set. Check .env or env vars."
+        )
+
     credentials = CognitiveServicesCredentials(AZURE_CV_KEY)
     client = ComputerVisionClient(AZURE_CV_ENDPOINT, credentials)
     return client
@@ -45,3 +52,4 @@ def extract_text_from_image(image_bytes: bytes) -> str:
                 text_lines.append(line.text)
 
     return "\n".join(text_lines)
+
