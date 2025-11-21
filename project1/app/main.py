@@ -15,24 +15,24 @@ from app.llm.gemini_client import (
 from app.diffusion.sd_client import generate_image_from_prompt
 from app.vision.azure_cv_client import detect_objects_from_image_url
 
-
 import traceback
 
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# 🔹 CORS 설정 (개발용: 전부 허용)
+# CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],          # 모든 origin 허용 (개발 단계)
+    allow_origins=["*"],          
     allow_credentials=True,
-    allow_methods=["*"],          # 모든 HTTP 메서드 허용 (GET, POST, ...)
-    allow_headers=["*"],          # 모든 헤더 허용
+    allow_methods=["*"],          
+    allow_headers=["*"],          
 )
 
+
 # ---------------------------
-# ① 책 표지 분석 (OCR)
+# 1. 책 표지 분석 (OCR)
 # ---------------------------
 @app.post("/api/analyze-cover")
 async def analyze_cover(file: UploadFile = File(...)):
@@ -41,7 +41,7 @@ async def analyze_cover(file: UploadFile = File(...)):
         ocr_text = extract_text_from_image(image_bytes)
         # 제목: OCR 텍스트의 첫 줄 또는 가장 긴 줄
         #lines = [line.strip() for line in ocr_text.split("\n") if line.strip()]
-       # title = lines[0] if lines else ""
+        #title = lines[0] if lines else ""
 
         return { "title": ocr_text }
 
@@ -50,8 +50,8 @@ async def analyze_cover(file: UploadFile = File(...)):
 
 
 # ---------------------------
-# ② 페이지 전체 처리 파이프라인
-# OCR → Gemini → SDXL → Detection
+# 2. 페이지 전체 처리 파이프라인
+#    OCR → Gemini → SDXL → Detection
 # ---------------------------
 @app.post("/api/process-page")
 async def process_page(
@@ -127,6 +127,7 @@ async def chat_api(payload: dict):
     except Exception as e:
         print("[/api/chat] ERROR:", repr(e))
         return { "error": str(e) }
+
 
 # ---------------------------
 # 5. 채팅 요약 API

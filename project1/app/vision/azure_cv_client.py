@@ -10,6 +10,7 @@ PREDICTION_KEY = os.getenv("AZURE_CV_PREDICTION_KEY")
 _translation_cache: dict[str, str] = {}
 _translator = Translator()
 
+
 def _translate_name_en_to_ko(name: str) -> str:
     """
     Object Detection 결과의 name(영어)을 한국어로 번역.
@@ -28,7 +29,6 @@ def _translate_name_en_to_ko(name: str) -> str:
         result = _translator.translate(name, src="en", dest="ko")
         translated = result.text
     except Exception:
-        # 번역 실패하면 그냥 원본 반환
         translated = name
 
     # 3) 캐시 저장
@@ -129,7 +129,7 @@ def detect_objects_from_image_url(image_url: str, top_k: int=3) -> list[dict]:
     """
     프론트와 주고받는 imageUrl("/static/generated/xxx.png")을 받아
     실제 로컬 경로로 매핑하고,
-    Object Detection 후 confidence 상위 top_k 개만 반환한다.
+    Object Detection 후 confidence 상위 top_k 개만 반환.
     """
     image_path = _resolve_local_path_from_url(image_url)
     if not os.path.exists(image_path):
@@ -152,7 +152,6 @@ def detect_objects_from_image_url(image_url: str, top_k: int=3) -> list[dict]:
         name_en = det.get("name")
         name_ko = _translate_name_en_to_ko(name_en)
 
-        # 구조는 그대로, name만 한국어로 교체
         translated_detections.append(
             {
                 **det,

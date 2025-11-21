@@ -12,8 +12,7 @@ from app.config import SD_MODEL_ID
 _device = "cuda" if torch.cuda.is_available() else "cpu"
 _pipe: StableDiffusionXLPipeline | None = None
 
-# 프로젝트 루트 기준으로 static/generated 디렉토리 계산
-BASE_DIR = Path(__file__).resolve().parents[2]  # ~/MS-AI-Shcool/project1
+BASE_DIR = Path(__file__).resolve().parents[2]
 GENERATED_DIR = BASE_DIR / "app" / "static" / "generated"
 
 def _get_pipeline() -> StableDiffusionXLPipeline:
@@ -31,7 +30,7 @@ def _get_pipeline() -> StableDiffusionXLPipeline:
             SD_MODEL_ID,
             torch_dtype=dtype,
             use_safetensors=True,
-            variant="fp16",  # GPU 기준. CPU만 쓸 거면 빼도 됨.
+            variant="fp16",
         ).to(_device)
 
         try:
@@ -59,13 +58,12 @@ def generate_image_from_prompt(
     이미지를 생성해서 app/static/generated 하위에 저장하고,
     - 프론트 용 URL (url)
     - 백엔드 용 로컬 파일 경로 (path)
-    를 모두 반환한다.
+    반환
     """
     pipe = _get_pipeline()
 
     # 출력 디렉터리 보장
     GENERATED_DIR.mkdir(parents=True, exist_ok=True)
-    print("SDXL] GENERATED_DIR: ", GENERATED_DIR)
 
     generator = None
     if seed is not None:
@@ -92,9 +90,7 @@ def generate_image_from_prompt(
 
     filename = f"{uuid4().hex}.png"
     filepath = GENERATED_DIR / filename   # 로컬 경로
-    print("[SDXL] saving to: ", filepath)
     image.save(str(filepath))
-    print("[SDXL] saved: ", filepath)
     
     url_path = f"/static/generated/{filename}"  # 프론트에서 쓸 URL
 
