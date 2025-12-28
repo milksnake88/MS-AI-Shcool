@@ -7,7 +7,7 @@
 
 🎥 **Demo Video**
 
-![MovieMakerProject_1-ezgif com-optimize](https://github.com/user-attachments/assets/c05db986-7587-4946-9fc0-0c320d336e02)
+<img src="https://github.com/user-attachments/assets/c05db986-7587-4946-9fc0-0c320d336e02" width="400">
 
 ---
 
@@ -31,12 +31,12 @@ JSON Response
 
 ## 🧠 Tech Stack
 
-**Backend** — FastAPI, Python 3.10, Uvicorn
-**OCR** — Azure Computer Vision
-**LLM** — Google Gemini API
-**Image Generation** — Stable Diffusion XL (`diffusers`)
-**Detection** — Azure Custom Vision
-**Infra** — Azure VM (GPU), SSH tunneling during development
+**Backend** — FastAPI, Python 3.10, Uvicorn  
+**OCR** — Azure Computer Vision  
+**LLM** — Google Gemini API  
+**Image Generation** — Stable Diffusion XL (`diffusers`)  
+**Detection** — Azure Custom Vision  
+**Infra** — Azure VM (GPU), SSH tunneling during development  
 
 ---
 
