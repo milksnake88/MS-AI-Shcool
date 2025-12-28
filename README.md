@@ -5,18 +5,20 @@
 
 > This backend service turns a storybook page into an **AI-generated illustration and structured scene understanding** using OCR, LLM, Stable Diffusion XL, and Object detection.
 
-🎥 **Demo Video Attached**
+🎥 **Demo Video**
+
+![MovieMakerProject_1-ezgif com-optimize](https://github.com/user-attachments/assets/c05db986-7587-4946-9fc0-0c320d336e02)
 
 ---
 
-## 🔗 End-to-End Pipeline
+## 🔗 Pipeline
 
 ```
 Image Upload
    ↓
 Azure OCR (text extraction)
    ↓
-Gemini (prompt generation for SDXL)
+Gemini (prompt generation for SDXL & QnA generation)
    ↓
 Stable Diffusion XL (image generation, GPU)
    ↓
@@ -57,7 +59,7 @@ form-data: file = image
 
 ---
 
-### **② Process Story Page (Full Pipeline)**
+### **② Generate Image**
 
 ```
 POST /api/process-page
@@ -114,24 +116,6 @@ Environment variables (Azure · Gemini · SDXL model) are managed via `.env`.
 
 ---
 
-## 🎯 Engineering Highlights
-
-* Orchestrated **OCR → LLM → Diffusion → Detection** in a single request
-* **GPU-optimized SDXL** (attention slicing / VAE tiling)
-* Static image serving + clean URL ↔ path mapping
-* Frontend-friendly **JSON contract design**
-* CORS configured for browser-based clients
-
----
-
-## 🔒 Production Considerations
-
-* Restrict CORS
-* Secure API keys
-* Enable SDXL safety checker for public services
-
----
-
 ## 🌱 Future Work
 
 * Improve face & artifact suppression
@@ -144,13 +128,3 @@ Environment variables (Azure · Gemini · SDXL model) are managed via `.env`.
 
 To help children **visualize the stories they read**,
 by turning book pages into **AI-generated interactive scenes**.
-
----
-
-If you’d like, I can also provide:
-
-✅ a **badge header section**
-✅ a **short project summary paragraph**
-✅ or **a matching Korean README**
-
-Just tell me 👍
