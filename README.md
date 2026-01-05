@@ -1,7 +1,8 @@
-# 📘 Project1: AI Storybook Assistant — Backend (2025/11/11~2025/11/20)
+# 📘 Project1: AI Storybook Mate — Backend
+2025/11/11~2025/11/20
 
 **Input:** A photo of a real children’s storybook page  
-**Output:** AI-generated prompt · SDXL illustration · Object detection Game
+**Output:** AI-generated chatting & QnA · SDXL illustration · Object detection Game
 
 > This backend service turns a storybook page into an **AI-generated illustration and structured scene understanding** using OCR, LLM, Stable Diffusion XL, and Object detection.
 
