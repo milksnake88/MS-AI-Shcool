@@ -1,4 +1,4 @@
-# 📘 Project1: AI Storybook Assistant — Backend
+# 📘 Project1: AI Storybook Assistant — Backend (2025/11/11~2025/11/20)
 
 **Input:** A photo of a real children’s storybook page  
 **Output:** AI-generated prompt · SDXL illustration · Object detection Game
