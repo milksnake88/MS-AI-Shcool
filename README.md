@@ -13,6 +13,10 @@
 
 ## 🔗 Pipeline
 
+
+<img width="900" alt="스크린샷 2026-01-05 154950" src="https://github.com/user-attachments/assets/9d880681-9add-4071-a136-81e44f56b551" />
+
+
 ```
 Image Upload
    ↓
